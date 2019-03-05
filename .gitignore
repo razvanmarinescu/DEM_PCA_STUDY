@@ -1,0 +1,10 @@
+*.mat
+*.aux
+*~
+*.log
+*.out
+*.gz
+*.backup
+*.bak
+*.idea
+*.swp
