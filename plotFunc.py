@@ -41,7 +41,10 @@ def adjustCurrFig():
   fig.set_size_inches(180.5, 100.5)
 
   mng = pl.get_current_fig_manager()
-  maxSize = mng.window.maxsize()
+  # maxSize = mng.window.maxsize()
+  # mng.window.Maximize(True)
+  # maxSize = fig.get_size_inches()
+  maxSize = (3600,1080)
   maxSize = (maxSize[0]/2.1, maxSize[1]/1.1)
   print(maxSize)
   mng.resize(*maxSize)
@@ -789,8 +792,8 @@ def plotTrajAlignHist(ts, xs, labels, plotTrajParams, diag, maxLikStages, xLim=N
     legobj.set_linewidth(4.0)
 
   mng = pl.get_current_fig_manager()
-  maxSize = mng.window.maxsize()
-  maxSize = (maxSize[0] / 4.5, maxSize[1] / 1.3)
+  # maxSize = mng.window.maxsize()
+  # maxSize = (maxSize[0] / 4.5, maxSize[1] / 1.3)
   mng.resize(*plotTrajParams['trajAlignMaxWinSize'])
 
   # fig.suptitle('%s progression' % plotTrajParams['expName'], fontsize=20)
@@ -798,6 +801,129 @@ def plotTrajAlignHist(ts, xs, labels, plotTrajParams, diag, maxLikStages, xLim=N
   # print(adaws)
 
   return fig, legend
+
+
+def plotTrajAlignHistKeir(ts, xs, labels, plotTrajParams, diag, maxLikStages, idxBiomkToPlot, xLim=None, yLim=None):
+  '''
+  Plots trajectories of multiple ROIs on same axis, along with patient staging histogram (overlayed).
+  Parameters
+  ----------
+  ts - points on the time axis
+  xs - biomarker values
+  labels - labels of brain ROIs
+  plotTrajParams - various parameters for plotting such as colors, axis limits, etc ..
+  xLim - limits on x-axis as tuple
+  yLim - limits on y-axis as tuple
+
+  Returns
+  -------
+  fig - figure handle
+  legend
+
+  '''
+
+  font = {'family': 'normal',
+    # 'weight': 'bold',
+    'size': 16}
+
+  matplotlib.rc('font', **font)
+
+  nrBiomk = xs.shape[1]
+  # figSizeInch = (plotTrajParams['TrajAlignWinSize'][0] / 100,
+  # plotTrajParams['TrajAlignWinSize'][1] / 100)
+  fig = pl.figure(2)
+  pl.clf()
+  ax = pl.subplot(111)
+  colors = list(iter(pl.cm.rainbow(np.linspace(0, 1, nrBiomk))))
+  markerCycleObj = cycle(['-', ':'])
+  linestyles = [next(markerCycleObj) for _ in range(nrBiomk)]
+  # ax = fig.add_axes(plotTrajParams['axisPos'])
+  # ax = fig.add_axes()
+  # fig.tight_layout()
+
+  markers = []
+  for m in Line2D.markers:
+    try:
+      if len(m) == 1 and m != ' ':
+        markers.append(m)
+    except TypeError:
+      pass
+
+  markers = cycle(markers)
+
+  legendEntries = []
+
+  tMin = np.min(maxLikStages)
+  tMax = np.max(maxLikStages)
+
+  if xLim is not None:
+    pl.xlim(xLim[0], xLim[1])
+  else:
+    xLim = (tMin, tMax)
+    pl.xlim(xLim[0], xLim[1])
+
+  fs = [interpolate.interp1d(ts[1:-1, b], xs[1:-1, b], kind='linear',
+    fill_value='extrapolate') for b in range(nrBiomk)]
+  fPredxMax = [fs[b](xLim[1]) for b in range(nrBiomk)]
+  legendOrderInd = np.argsort(fPredxMax)[::-1]
+  invPerm = np.argsort(legendOrderInd)
+
+  for b in legendOrderInd:
+    if b in idxBiomkToPlot:
+      print("biomk %d %s" % (b, labels[b]))
+
+      # temporary hack to remove horiz asymptote: ignore the first and last pair of points
+      # need to fix it properly in integrateTraj func
+      lh = ax.plot(ts[1:-1, b], xs[1:-1, b], c=colors[b], linestyle=linestyles[b],
+        # marker=markers.next(),
+        label=labels[b],
+        linewidth=4.0,
+        markersize=3)
+      legendEntries.append(lh)
+
+  mask1 = ts > tMin
+  mask2 = ts < tMax
+  xsPlotVals = xs[mask1 * mask2]
+  xMin = np.nanmin(xsPlotVals)
+  xMax = np.nanmax(xsPlotVals)
+
+  # yMin = np.nanmin(ys[mask1 * mask2])
+  # yMax = np.nanmax(ys[mask1 * mask2])
+
+  if yLim is None:
+    yLim = xMin, xMax # should be xMin, xMax as for x-axis we have ts instead.
+
+  pl.ylim(yLim[0], yLim[1])
+  ax.plot([0, 0], yLim, '--', color='0.7')
+
+  pl.xlabel(plotTrajParams['xLabel'])
+  pl.ylabel('Z-score relative to controls')
+
+  box = ax.get_position()
+  # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+  # legend = pl.legend(loc = 'center left', bbox_to_anchor = (1, 0.5), ncol=1)
+  print(box.x0, box.y0, box.width, box.height)
+  ax.set_position([1.2 * box.x0, 1.1 * box.y0, box.width, box.height * 0.9])
+  legend = pl.legend(loc='upper center', bbox_to_anchor=(0.5, 1.3), ncol=4)
+
+  # legend = pl.legend(  # legendEntries, labels,
+  #   bbox_to_anchor=plotTrajParams['legendPos'], loc='upper center', ncol=plotTrajParams['legendCols'])
+
+  # set the linewidth of each legend object
+  for legobj in legend.legendHandles:
+    legobj.set_linewidth(4.0)
+
+  mng = pl.get_current_fig_manager()
+  # maxSize = mng.window.maxsize()
+  # maxSize = (maxSize[0] / 4.5, maxSize[1] / 1.3)
+  mng.resize(*plotTrajParams['trajAlignMaxWinSize'])
+
+  # fig.suptitle('%s progression' % plotTrajParams['expName'], fontsize=20)
+  # fig.suptitle('%s progression' % plotTrajParams['expNameFull'])
+  # print(adaws)
+
+  return fig, legend
+
 
 
 def plotTrajAlignHistCog(ts, xs, labels, plotTrajParams, diag, maxLikStages, xLim=None, yLim=None):

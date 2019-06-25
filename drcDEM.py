@@ -6,7 +6,7 @@ from evaluationFramework import *
 from DEM import *
 from aux import *
 import numpy as np
-from drcDEM import *
+
 
 def runAllExpDRC(params, expName, dpmBuilder):
   """ runs all experiments"""
@@ -29,8 +29,8 @@ def runAllExpDRC(params, expName, dpmBuilder):
   expNamePCA = '%sPCA' % expName
   params['stagingInformPrior'] = False
   if unluckyOrNoParallel:
-    dpmObj, res['stdPCA'] = runStdDPM(params, expNamePCA, dpmBuilder, params['runPartMain'])
-    # res['outFolder'] = dpmObj.params['outFolder']
+    dpmObjPCA, res['stdPCA'] = runStdDPM(params, expNamePCA, dpmBuilder, params['runPartMain'])
+    # res['outFolder'] = dpmObjPCA.params['outFolder']
 
 
   res['dirDiagStatsPCA'] = evalDirDiag(dpmBuilder, expNamePCA, params)
@@ -51,7 +51,7 @@ def runAllExpDRC(params, expName, dpmBuilder):
   params['stagingInformPrior'] = True
   expNameAD = '%sAD' % expName
   if unluckyOrNoParallel:
-    _, res['stdAD'] = runStdDPM(params, expNameAD, dpmBuilder, params['runPartMain'])
+    dpmObjAD, res['stdAD'] = runStdDPM(params, expNameAD, dpmBuilder, params['runPartMain'])
 
   res['dirDiagStatsAD'] = evalDirDiag(dpmBuilder, expNameAD, params)
   res['upEqStagesPercAD'], res['pFUgrBLAllAD'], res['timeDiffHardAD'], res['timeDiffSoftAD'] \
@@ -86,6 +86,33 @@ def runAllExpDRC(params, expName, dpmBuilder):
 
     ttestsRegions(res['stdPCA'], params['labels'], 'PCA')
     ttestsRegions(res['stdAD'], params['labels'], 'AD')
+
+  if unluckyOrNoParallel:
+    dpmObjPCA.params['plotTrajParams']['xLabel'] = 'Years since $t_0$'
+
+
+    print(dpmObjPCA.params['labels'])
+    # asda
+    idxBiomkToPlot = [4,7]
+    fig, lgd = plotTrajAlignHistKeir(res['stdPCA']['ts'], res['stdPCA']['xsZ'], dpmObjPCA.params['labels'], dpmObjPCA.params['plotTrajParams'],
+      dpmObjPCA.diag, res['stdPCA']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjPCA.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjPCA.params['plotTrajParams']['trajSubfigYlim'])
+    fig.show()
+    fig.savefig(dpmObjPCA.trajAlign + '_step1.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+    idxBiomkToPlot = [4,7,2,3]
+    fig, lgd = plotTrajAlignHistKeir(res['stdPCA']['ts'], res['stdPCA']['xsZ'], dpmObjPCA.params['labels'], dpmObjPCA.params['plotTrajParams'],
+      dpmObjPCA.diag, res['stdPCA']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjPCA.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjPCA.params['plotTrajParams']['trajSubfigYlim'])
+    fig.show()
+    fig.savefig(dpmObjPCA.trajAlign + '_step2.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+    idxBiomkToPlot = [0,1,2,3,4,5,6,7]
+    fig, lgd = plotTrajAlignHistKeir(res['stdPCA']['ts'], res['stdPCA']['xsZ'], dpmObjPCA.params['labels'], dpmObjPCA.params['plotTrajParams'],
+      dpmObjPCA.diag, res['stdPCA']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjPCA.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjPCA.params['plotTrajParams']['trajSubfigYlim'])
+    fig.show()
+    fig.savefig(dpmObjPCA.trajAlign + '_step3.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+
+
 
   # test the EBM on Silvia's subgroups independently
   # runSubgroupsPCA(dpmBuilder, expName, params)

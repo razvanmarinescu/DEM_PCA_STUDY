@@ -126,9 +126,9 @@ class DEM:
       sigma_pred = npData['sigma_pred']
       posteriorSamples = npData['posteriorSamples']
 
-    fig = plotDiffPredData(patDXdTdata, patAvgXdata, patDiagB, x_pred, dXdT_pred, sigma_pred,
-                           posteriorSamples, self.params['labels'], plotTrajParams)
-    fig.savefig(self.diffDataPredFigName, dpi=100)
+    # fig = plotDiffPredData(patDXdTdata, patAvgXdata, patDiagB, x_pred, dXdT_pred, sigma_pred,
+    #                        posteriorSamples, self.params['labels'], plotTrajParams)
+    # fig.savefig(self.diffDataPredFigName, dpi=100)
     # pl.pause(1000)
 
     # take largest (non-zero dXdT) section and integrate trajectory

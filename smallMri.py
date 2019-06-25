@@ -188,7 +188,7 @@ def mriSmall(runIndex, nrProcesses, modelToRun):
 
   if params['masterProcess']:
     params['runPartStd'] = ['L', 'L']  # [gaussian fit, aligner]
-    params['runPartMain'] = ['R', 'R', 'L']  # [stdDEM, plotTrajectories, stageSubj]
+    params['runPartMain'] = ['R', 'I', 'L']  # [stdDEM, plotTrajectories, stageSubj]
     params['runPartDirDiag'] = ['R', 'R', 'I']
     params['runPartStaging'] = ['L', 'L', 'I']
     params['runPartDiffDiag'] = ['R', 'R', 'I']
