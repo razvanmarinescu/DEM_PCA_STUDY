@@ -97,19 +97,42 @@ def runAllExpDRC(params, expName, dpmBuilder):
     fig, lgd = plotTrajAlignHistKeir(res['stdPCA']['ts'], res['stdPCA']['xsZ'], dpmObjPCA.params['labels'], dpmObjPCA.params['plotTrajParams'],
       dpmObjPCA.diag, res['stdPCA']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjPCA.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjPCA.params['plotTrajParams']['trajSubfigYlim'])
     fig.show()
-    fig.savefig(dpmObjPCA.trajAlign + '_step1.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    fig.savefig(dpmObjPCA.trajAlign + '_PCA_step1.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
 
     idxBiomkToPlot = [4,7,2,3]
     fig, lgd = plotTrajAlignHistKeir(res['stdPCA']['ts'], res['stdPCA']['xsZ'], dpmObjPCA.params['labels'], dpmObjPCA.params['plotTrajParams'],
       dpmObjPCA.diag, res['stdPCA']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjPCA.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjPCA.params['plotTrajParams']['trajSubfigYlim'])
     fig.show()
-    fig.savefig(dpmObjPCA.trajAlign + '_step2.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    fig.savefig(dpmObjPCA.trajAlign + '_PCA_step2.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
 
     idxBiomkToPlot = [0,1,2,3,4,5,6,7]
     fig, lgd = plotTrajAlignHistKeir(res['stdPCA']['ts'], res['stdPCA']['xsZ'], dpmObjPCA.params['labels'], dpmObjPCA.params['plotTrajParams'],
       dpmObjPCA.diag, res['stdPCA']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjPCA.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjPCA.params['plotTrajParams']['trajSubfigYlim'])
     fig.show()
-    fig.savefig(dpmObjPCA.trajAlign + '_step3.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+    fig.savefig(dpmObjPCA.trajAlign + '_PCA_step3.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+
+
+    print(dpmObjAD.params['labels'])
+    # asda
+    idxBiomkToPlot = [4,7]
+    fig, lgd = plotTrajAlignHistKeir(res['stdAD']['ts'], res['stdAD']['xsZ'], dpmObjAD.params['labels'], dpmObjAD.params['plotTrajParams'],
+      dpmObjAD.diag, res['stdAD']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjAD.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjAD.params['plotTrajParams']['trajSubfigYlim'])
+    fig.show()
+    fig.savefig(dpmObjAD.trajAlign + '_AD_step1.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+    idxBiomkToPlot = [4,7,2,3]
+    fig, lgd = plotTrajAlignHistKeir(res['stdAD']['ts'], res['stdAD']['xsZ'], dpmObjAD.params['labels'], dpmObjAD.params['plotTrajParams'],
+      dpmObjAD.diag, res['stdAD']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjAD.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjAD.params['plotTrajParams']['trajSubfigYlim'])
+    fig.show()
+    fig.savefig(dpmObjAD.trajAlign + '_AD_step2.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
+    idxBiomkToPlot = [0,1,2,3,4,5,6,7]
+    fig, lgd = plotTrajAlignHistKeir(res['stdAD']['ts'], res['stdAD']['xsZ'], dpmObjAD.params['labels'], dpmObjAD.params['plotTrajParams'],
+      dpmObjAD.diag, res['stdAD']['maxLikStages'], idxBiomkToPlot, xLim = dpmObjAD.params['plotTrajParams']['trajSubfigXlim'], yLim=dpmObjAD.params['plotTrajParams']['trajSubfigYlim'])
+    fig.show()
+    fig.savefig(dpmObjAD.trajAlign + '_AD_step3.png', bbox_extra_artists=(lgd,), bbox_inches='tight')
+
 
 
 
