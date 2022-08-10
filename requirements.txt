@@ -54,7 +54,7 @@ meld==3.18.0
 menulibre==2.2.0
 mistune==0.8.4
 mugshot==0.4.0
-nbconvert==5.4.1
+nbconvert==6.3.0
 nbformat==4.4.0
 nibabel==2.3.3
 notebook==5.7.4
